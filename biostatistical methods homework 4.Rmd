@@ -221,8 +221,6 @@ totalcost_sqrt = heart_data %>%
 (totalcost_non + totalcost_sq) / (totalcost_log + totalcost_sqrt)
 ```
 
-
-
 The shape of the distribution for `totalcost` is right skewed. After trying different transformation we find that the log transformation makes the plot approximate to normal distribution.
 
 ## c) 
@@ -239,9 +237,23 @@ heart_data = heart_data %>%
 
 Based on our decision in part b), fit a simple linear regression (SLR) between the original or transformed ‘total cost’ and predictor ‘ERvisits’. This includes a scatterplot and results of the regression, with appropriate comments on significance and interpretation of the slope. (5p)
 
+```{r}
+heart_data %>%
+  ggplot(aes(x = ERvisits, y = totalcost)) +
+  geom_point(color = 'blue') +
+  geom_smooth(method = "lm", color = 'red', se = FALSE) +
+  labs(
+      x = 'The number of ER visits',
+      y = 'Total Cost'
+      )
+```
 
+```{r}
+fit = lm(totalcost ~ ERvisits, data = heart_data)
+summary(fit)
+```
 
-
+The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 955.44 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The intepretation of the slope is that when the number of ER visits increase 1 the total cost will increase 955.44.
 
 
 e) Fit a multiple linear regression (MLR) with ‘comp_bin’ and ‘ERvisits’ as predictors.
