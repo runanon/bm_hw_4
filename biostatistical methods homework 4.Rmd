@@ -131,8 +131,7 @@ mean_and_sd = function(x) {
 
 ### totalcost
 ```{r}
-mean_and_sd(heart_data$totalcost) %>%
-  knitr::kable()
+mean_and_sd(heart_data$totalcost)
 ```
 
 The mean of the total cost is about 2800 with a standard deviation of 6690.26.
@@ -174,7 +173,6 @@ The average duration of treatment condition is 164 with a standard deviation of 
 
 ## b) 
 
-Investigate the shape of the distribution for variable ‘total cost’ and try different transformations, if needed.
 
 ```{r}
 totalcost_non = heart_data %>%
@@ -229,50 +227,87 @@ Create a new variable called ‘comp_bin’ by dichotomizing ‘complications’
 
 ```{r}
 heart_data = heart_data %>%
-  mutate(comp_bin = ifelse(complications == 0, 0, 1))
+  mutate(comp_bin = ifelse(complications == 0, 0, 1)) %>%
+  mutate(comp_bin = as.character(comp_bin))
 ```
 
 
 ## d) 
 
-Based on our decision in part b), fit a simple linear regression (SLR) between the original or transformed ‘total cost’ and predictor ‘ERvisits’. This includes a scatterplot and results of the regression, with appropriate comments on significance and interpretation of the slope. (5p)
+Based on our decision in part b), fit a simple linear regression (SLR) between the original or transformed ‘total cost’ and predictor ‘ERvisits’. This includes a scatterplot and results of the regression, with appropriate comments on significance and interpretation of the slope.
 
 ```{r}
-heart_data %>%
+heart_data_trans = heart_data %>%
+  mutate(totalcost = log(totalcost)) %>%
+  filter(totalcost != -Inf)
+```
+
+
+```{r}
+heart_data_trans %>%
   ggplot(aes(x = ERvisits, y = totalcost)) +
   geom_point(color = 'blue') +
   geom_smooth(method = "lm", color = 'red', se = FALSE) +
   labs(
       x = 'The number of ER visits',
-      y = 'Total Cost'
+      y = 'Log Transformation of Total Cost'
       )
 ```
 
+
 ```{r}
-fit = lm(totalcost ~ ERvisits, data = heart_data)
-summary(fit)
+fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
+summary(fit_SLR)
 ```
 
-The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 955.44 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The intepretation of the slope is that when the number of ER visits increase 1 the total cost will increase 955.44.
+The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 0.22672 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The estimate of slope means that when the number of ER visits increase 1, total cost will increase 25%.
+$$
+\begin{aligned}
+log\left (\frac{Y_{2}}{Y_{1}}  \right ) &= \beta_{1} = 0.22672\\
+\frac{Y_{2}}{Y_{1}} &= e^{0.22672} = 1.25\\
+Y_{2} &= 1.25Y_{1}
+\end{aligned}
+$$
+
+## e) 
+
+Fit a multiple linear regression (MLR) with ‘comp_bin’ and ‘ERvisits’ as predictors.
 
 
-e) Fit a multiple linear regression (MLR) with ‘comp_bin’ and ‘ERvisits’ as predictors.
+### i) 
 
-i) Test if ‘comp_bin’ is an effect modifier of the relationship between ‘total cost’ and
-‘ERvisits’. Comment. (2p)
+Test if ‘comp_bin’ is an effect modifier of the relationship between ‘total cost’ and ‘ERvisits’. Comment. 
 
-ii)Test if ‘comp_bin’ is a confounder of the relationship between ‘total cost’ and ‘ERvisits’.
-Comment. (2p)
+```{r}
+fit_MLR_interaction = lm(totalcost ~ comp_bin * ERvisits, data = heart_data_trans)
+summary(fit_MLR_interaction)
 
-iii) Decideif‘comp_bin’shouldbeincludedalongwith‘ERvisits.Whyorwhynot?(1p)
+```
 
+The definition of modifier is when the magnitude of association differs at different levels of another variable (in this case `comp_bin`), it suggests that effect modification is present. From the result shown above, `comp_bin` is not a modifier according to the p-value of comp_bin1:ERvisits is larger than 0.05.
 
+### ii)
 
+Test if ‘comp_bin’ is a confounder of the relationship between ‘total cost’ and ‘ERvisits’.
+Comment. 
 
+```{r}
+fit_MLR = lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans)
+fit_MLR
+summary(fit_MLR)
+```
 
+Using the summary function we can observe that after adding `comp_bin` as predictor the adjusted R-squared is increasing comparing with only using `ERvisits` as predictor. So `comp_bin` is not a confounder. 
 
+### iii) 
 
-f) Use your choice of model in part e) and add additional covariates (age, gender, and duration of treatment).
+Decide if ‘comp_bin’ should be included along with ‘ERvisits'. Why or why not?
+
+`comp_bin` should be included along with `ERvisits` according to the test in ii). The p-value of comp_bin coefficient shows significance. Besides, judging from the adjusted R-squared, when including `comp_bin` the value increases comparing with only using `ERvisits` as predictor. So, `comp_bin` should be included along with `ERvisits`
+
+## f) 
+
+Use your choice of model in part e) and add additional covariates (age, gender, and duration of treatment).
 
 i) Fit a MLR, show the regression results and comment. (5p)
 
