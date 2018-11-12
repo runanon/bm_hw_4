@@ -309,12 +309,62 @@ Decide if ‘comp_bin’ should be included along with ‘ERvisits'. Why or why 
 
 Use your choice of model in part e) and add additional covariates (age, gender, and duration of treatment).
 
-i) Fit a MLR, show the regression results and comment. (5p)
+### i) 
 
-ii) Compare the SLR and MLR models. Which model would you use to address the
-investigator’s objective and why? (2p)
+Fit a MLR, show the regression results and comment. (5p)
 
+Regression model in e):
+```{r}
+lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
+  summary()
+```
 
+Add age as a covariate:
+```{r}
+lm(totalcost ~ comp_bin + ERvisits + age, data = heart_data_trans) %>%
+  summary()
+```
+Judging from p-value and adjusted R-squared, age should NOT be included in the model.
+
+Add gender as a covariate:
+```{r}
+heart_data_trans = heart_data_trans %>%
+  mutate(gender = as.character(gender))
+
+lm(totalcost ~ comp_bin + ERvisits + gender, data = heart_data_trans) %>%
+  summary()
+```
+Judging from p-value and adjusted R-squared, gender should NOT be included in the model.
+
+Add duration as a covariate:
+```{r}
+lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans) %>%
+  summary()
+```
+Judging from p-value and adjusted R-squared, duration should be included in the model.
+
+Test whether duration is an effect modifier:
+```{r}
+lm(totalcost ~ comp_bin * duration + ERvisits, data = heart_data_trans) %>%
+  summary()
+
+lm(totalcost ~ comp_bin + ERvisits * duration, data = heart_data_trans) %>%
+  summary()
+
+lm(totalcost ~ comp_bin * duration + ERvisits * duration, data = heart_data_trans) %>%
+  summary()
+```
+Judging from the p-value and adjusted R-squared, duration is NOT an effective modifier.
+
+In conclusion, the final MLR will include `comp_bin`, `duration` and `ERvisits`:
+$$
+\hat{Y} = 1.53X_{comp\_bin} \ +\ 0.17X_{ERvisits} \ +\ 0.005X_{duration} \ +\ 4.76
+$$
+
+### ii) 
+Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why? (2p)
+
+Due to the fact that the investigator is mainly interested if there is an association between ‘total cost’ and the ‘number of emergency room (ER) visits’, I choose SLR. SLR is more intuitive and simple to explain.
 
 
 
