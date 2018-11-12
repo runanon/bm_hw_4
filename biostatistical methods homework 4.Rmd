@@ -292,9 +292,9 @@ Test if ‘comp_bin’ is a confounder of the relationship between ‘total cost
 Comment. 
 
 ```{r}
-fit_MLR = lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans)
-fit_MLR
-summary(fit_MLR)
+lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
+  summary()
+
 ```
 
 Using the summary function we can observe that after adding `comp_bin` as predictor the adjusted R-squared is increasing comparing with only using `ERvisits` as predictor. So `comp_bin` is not a confounder. 
@@ -319,14 +319,14 @@ lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
   summary()
 ```
 
-Add age as a covariate:
+Add `age` as a covariate:
 ```{r}
 lm(totalcost ~ comp_bin + ERvisits + age, data = heart_data_trans) %>%
   summary()
 ```
-Judging from p-value and adjusted R-squared, age should NOT be included in the model.
+Judging from p-value and adjusted R-squared, `age` should NOT be included in the model.
 
-Add gender as a covariate:
+Add `gender` as a covariate:
 ```{r}
 heart_data_trans = heart_data_trans %>%
   mutate(gender = as.character(gender))
@@ -334,16 +334,16 @@ heart_data_trans = heart_data_trans %>%
 lm(totalcost ~ comp_bin + ERvisits + gender, data = heart_data_trans) %>%
   summary()
 ```
-Judging from p-value and adjusted R-squared, gender should NOT be included in the model.
+Judging from p-value and adjusted R-squared, `gender` should NOT be included in the model.
 
-Add duration as a covariate:
+Add `duration` as a covariate:
 ```{r}
 lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans) %>%
   summary()
 ```
-Judging from p-value and adjusted R-squared, duration should be included in the model.
+Judging from p-value and adjusted R-squared, `duration` should be included in the model.
 
-Test whether duration is an effect modifier:
+Test whether `duration` is an effect modifier:
 ```{r}
 lm(totalcost ~ comp_bin * duration + ERvisits, data = heart_data_trans) %>%
   summary()
@@ -354,7 +354,7 @@ lm(totalcost ~ comp_bin + ERvisits * duration, data = heart_data_trans) %>%
 lm(totalcost ~ comp_bin * duration + ERvisits * duration, data = heart_data_trans) %>%
   summary()
 ```
-Judging from the p-value and adjusted R-squared, duration is NOT an effective modifier.
+Judging from the p-value and adjusted R-squared, `duration` is NOT an effective modifier.
 
 In conclusion, the final MLR will include `comp_bin`, `duration` and `ERvisits`:
 $$
@@ -364,11 +364,16 @@ $$
 ### ii) 
 Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why? (2p)
 
-Due to the fact that the investigator is mainly interested if there is an association between ‘total cost’ and the ‘number of emergency room (ER) visits’, I choose SLR. SLR is more intuitive and simple to explain.
+```{r}
+fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
+fit_MLR = lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans)
+anova(fit_SLR, fit_MLR)
+```
+
+Given the result of anova test, it's obviously that the MLR is prefered. So, I would choose MLR to address the investigator's objective.
 
 
-
-Problem 3 (15p)
+# Problem 3 (15p)
 
 A hospital administrator wishes to test the relationship between ‘patient’s satisfaction’ (Y) and ‘age’, ‘severity of illness’, and ‘anxiety level’ (data ‘PatSatisfaction.xlsx’). The administrator randomly selected 46 patients, collected the data, and asked for your help with the analysis.
 
