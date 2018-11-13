@@ -321,7 +321,7 @@ Use your choice of model in part e) and add additional covariates (age, gender, 
 
 ### i) 
 
-Fit a MLR, show the regression results and comment. (5p)
+Fit a MLR, show the regression results and comment.
 
 Regression model in e):
 ```{r}
@@ -329,55 +329,21 @@ lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
   summary()
 ```
 
-Add `age` as a covariate:
 ```{r}
-lm(totalcost ~ comp_bin + ERvisits + age, data = heart_data_trans) %>%
+lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_trans) %>%
   summary()
 ```
-Judging from p-value and adjusted R-squared, `age` should NOT be included in the model.
 
-Add `gender` as a covariate:
-```{r}
-heart_data_trans = heart_data_trans %>%
-  mutate(gender = as.character(gender))
+Comment:
+The result shows that almost all covariates contributed to the model besides gender's coefficient is less significance.
 
-lm(totalcost ~ comp_bin + ERvisits + gender, data = heart_data_trans) %>%
-  summary()
-```
-Judging from p-value, `gender` should NOT be included in the model.
-
-Add `duration` as a covariate:
-```{r}
-lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans) %>%
-  summary()
-```
-Judging from p-value and adjusted R-squared, `duration` should be included in the model.
-
-Test whether `duration` is an effect modifier:
-```{r}
-lm(totalcost ~ comp_bin * duration + ERvisits, data = heart_data_trans) %>%
-  summary()
-
-lm(totalcost ~ comp_bin + ERvisits * duration, data = heart_data_trans) %>%
-  summary()
-
-lm(totalcost ~ comp_bin * duration + ERvisits * duration, data = heart_data_trans) %>%
-  summary()
-```
-Judging from the p-value and adjusted R-squared, `duration` is NOT an effective modifier.
-
-
-In conclusion, the final MLR will include `comp_bin`, `duration` and `ERvisits`:
-$$
-\hat{Y_{i}} = 1.53X_{i\ comp\_bin} \ +\ 0.17X_{i\ ERvisits} \ +\ 0.005X_{i\ duration} \ +\ 4.76
-$$
 
 ### ii) 
-Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why? (2p)
+Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why?
 
 ```{r}
 fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
-fit_MLR = lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans)
+fit_MLR = lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_trans)
 anova(fit_SLR, fit_MLR)
 ```
 
