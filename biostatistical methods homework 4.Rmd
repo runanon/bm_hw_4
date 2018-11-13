@@ -390,12 +390,37 @@ sat_data = sat_data %>%
 
 ## a) 
 
-Create a correlation matrix and interpret your initial findings. (2p)
+Create a correlation matrix and interpret your initial findings. 
+
+```{r}
+cor(sat_data, method = "pearson")
+```
+
+The result is a table containing the correlation coefficients between each variable and the others. We can observe that age, severity and axiety have negative relationship with satisfaction. Among those three variables, age has the strongest negative relationship with satisfaction.
 
 ## b) 
 
 Fit a multiple regression model and test whether there is a regression relation. State the
-hypotheses, decision rule and conclusion. (3p)
+hypotheses, decision rule and conclusion.
+
+To build a multiple regression model, we add age, severity and anxiety as predictors:
+$$
+Y_{i} = \beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ anxiety} \ + \beta_{3}X_{i\ severity} + \varepsilon_{i}
+$$
+Our hypotheses is:
+$$
+\begin{aligned}
+&H_{0}:\ \beta_{1} = \beta_{2} = \beta_{3}=0\\
+&H_{1}:\ at\ least\ one\ \beta\ is \ not\ zero
+\end{aligned}
+$$
+
+```{r}
+sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
+summary(sat_fit)
+anova(sat_fit)
+```
+
 
 ## c) 
 
