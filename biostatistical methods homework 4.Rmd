@@ -526,9 +526,9 @@ confint(sat_fit)
 
 Interpretation:
 
-From the summary we see that the estimated coefficients of age, severity and anxiety is -1.1416, -0.4420 and -13.4702 respectively. Judging from the p-value, only the coefficients of age shows significance. 
+The coefficient associated with `severity` means that while other predictors hold constant the total cost will decrease 0.44 for each additional unit of the severity of the illness.
 
-The function of `confint` shows the CIs for each estimated coefficients. From the result we can conclude that we are 95% confidence that the true coefficient of severity will fall within the interval of (-1.434831, 0.5508228).
+The function of `confint` shows the CIs for each estimated coefficients. From the result we can conclude that we are 95% confidence that the mean total cost increases by somewhere between -1.434831 and 0.5508228 for each additional unit of the severity of the illness as other predictors hold constant.
 
 
 ## d) 
@@ -546,7 +546,7 @@ pi_data = data.frame(age = 35, severity = 42, anxiety = 2.1)
 predict(sat_fit, pi_data, interval="predict") 
 ```
 
-The 95% prediction interval of the satisfaction for the age is 35, severity is 42 and anxiety is 2.1 is between 50.06237 and 93.30426. The result means that we are 95% confidence that a future observation of satisfaction for age is 35, severity is 42 and anxiety is 2.1 will be contained within the interval between 50.06237 and 93.30426.
+The 95% prediction interval of the satisfaction for the age is 35, severity is 42 and anxiety is 2.1 is between 50.06237 and 93.30426. The result means that the probability is 0.95 that this prediction interval will give a correct prediction for the total cost when age is 35, severity is 42 and anxiety is 2.1.
 
 
 ## e) 
