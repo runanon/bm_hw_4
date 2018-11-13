@@ -298,7 +298,7 @@ lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
 
 ```
 
-Using the summary function we can observe that after adding `comp_bin` as predictor the adjusted R-squared is increasing comparing with only using `ERvisits` as predictor. So `comp_bin` is not a confounder. 
+Using the summary function we can observe that after adding `comp_bin` as predictor the adjusted R-squared is increasing comparing with only using `ERvisits` as predictor. So `comp_bin` is a confounder. 
 
 ### iii) 
 
@@ -357,6 +357,12 @@ lm(totalcost ~ comp_bin * duration + ERvisits * duration, data = heart_data_tran
 ```
 Judging from the p-value and adjusted R-squared, `duration` is NOT an effective modifier.
 
+Check:
+```{r}
+anova(lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans))
+```
+
+
 In conclusion, the final MLR will include `comp_bin`, `duration` and `ERvisits`:
 $$
 \hat{Y_{i}} = 1.53X_{i\ comp\_bin} \ +\ 0.17X_{i\ ERvisits} \ +\ 0.005X_{i\ duration} \ +\ 4.76
@@ -407,11 +413,21 @@ To build a multiple regression model, we add age, severity and anxiety as predic
 $$
 Y_{i} = \beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ anxiety} \ + \beta_{3}X_{i\ severity} + \varepsilon_{i}
 $$
-Our hypotheses is:
+Hypotheses:
 $$
 \begin{aligned}
 &H_{0}:\ \beta_{1} = \beta_{2} = \beta_{3}=0\\
 &H_{1}:\ at\ least\ one\ \beta\ is \ not\ zero
+\end{aligned}
+$$
+Decision rule:
+$$
+\begin{aligned}
+&Test\ statistic:\\ 
+&F^{*} = \frac{MSR}{MSE} > F(1-\alpha;p,n-p-1),\ reject\ H_{0}.\\
+\\
+&The\ null\ model\ contains\ only\ the\ intercept:\\
+&F^{*} = \frac{MSR}{MSE} \leqslant F(1-\alpha;p,n-p-1),\ fail\ to\ reject\ H_{0}
 \end{aligned}
 $$
 
@@ -421,18 +437,53 @@ summary(sat_fit)
 anova(sat_fit)
 ```
 
+Judging from the p-value, we can see that at least one $\beta$ is not zero, so we reject the null. 
+
 
 ## c) 
 
 Show the regression results for all estimated coefficients with 95% CIs. Interpret the coefficient
-and 95% CI associated with ‘severity of illness’. (5p)
+and 95% CI associated with ‘severity of illness’.
+
+
+
+
 
 ## d) 
 
 Obtain an interval estimate for a new patient’s satisfaction when Age=35, Severity=42,
 Anxiety=2.1. Interpret the interval. (2p)
 
+
+
+
+
+
 ## e) 
 
 Test whether ‘anxiety level’ can be dropped from the regression model, given the other two
 covariates are retained. State the hypotheses, decision rule and conclusion. (3p)
+
+The hypothese are as below:
+$$
+\begin{aligned}
+&Model\ 1:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ severity} \ +\  \varepsilon_{i}\\
+&Model\ 2:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ severity} \ +\ \beta_{3}X_{i\ anxiety} \ +\  \varepsilon_{i}\\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&H_{0} : \beta_{3} = 0\\
+&H_{1} : \beta_{3} \neq 0
+\end{aligned}
+$$
+
+```{r}
+anova(lm(satisfaction ~ age + severity, data = sat_data), lm(satisfaction ~ age + severity + anxiety, data = sat_data))
+```
+
+The result shows that the anxiety should NOT be included in the model.
+
+
+
