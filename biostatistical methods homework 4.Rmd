@@ -294,7 +294,7 @@ summary(fit_MLR_interaction)
 
 ```
 
-The definition of modifier is when the magnitude of association differs at different levels of another variable (in this case `comp_bin`), it suggests that effect modification is present. From the result shown above, `comp_bin` is not a modifier according to the p-value of comp_bin1:ERvisits is larger than 0.05.
+The definition of modifier is when the magnitude of association differs at different levels of another variable (in this case `comp_bin`), it suggests that effect modification is present. From the result shown above, `comp_bin` is not a modifier according to the p-value of comp_bin1:ERvisits is way larger than 0.05.
 
 ### ii)
 
@@ -302,18 +302,70 @@ Test if ‘comp_bin’ is a confounder of the relationship between ‘total cost
 Comment. 
 
 ```{r}
+lm(totalcost ~ ERvisits, data = heart_data_trans) %>%
+  summary()
+
+#coefficient estimate: 
+#ERvisits: 0.2251
+
+
 lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
   summary()
 
+#coefficient estimate: 
+#ERvisits: 0.20236
+
 ```
 
-Using the summary function we can observe that after adding `comp_bin` as predictor the adjusted R-squared is increasing comparing with only using `ERvisits` as predictor. So `comp_bin` is a confounder. 
+To calculate the percentage change in the parameter estimate, we use the following formula:
+
+$$
+\frac{\left |\beta_{crude}-\beta_{adjusted}  \right |}{\left |\beta_{crude}  \right |}=\frac{\left |0.2251-0.20236  \right |}{\left |0.2251  \right |}=0.1010218
+$$
+Here we use 10% rule of thumb. 0.1010218 is greater than 10%, so we consider `comp_bin` as a confounder.
 
 ### iii) 
 
 Decide if ‘comp_bin’ should be included along with ‘ERvisits'. Why or why not?
 
-`comp_bin` should be included along with `ERvisits` according to the test in ii). The p-value of comp_bin coefficient shows significance. Besides, judging from the adjusted R-squared, when including `comp_bin` the value increases comparing with only using `ERvisits` as predictor. So, `comp_bin` should be included along with `ERvisits`
+Hypothese:
+
+$$
+\begin{aligned}
+&Model\ 1:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ ERvisits} \ +\  \varepsilon_{i}\\
+&Model\ 2:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ ERvisits} \ +\ \beta_{2}X_{i\ comp\_bin} \ +\  \varepsilon_{i}\\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&H_{0} : \beta_{2} = 0\\
+&H_{1} : \beta_{2} \neq 0
+\end{aligned}
+$$
+Decision rule:
+
+$$
+F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}} \\
+df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
+$$
+
+$$
+\begin{aligned}
+&F^{*}>F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ reject\ H_{0}\\
+&F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
+\end{aligned}
+$$
+
+```{r}
+fit_without_comp = lm(totalcost ~ ERvisits, data = heart_data_trans)
+fit_with_comp = lm(totalcost ~ ERvisits + comp_bin, data = heart_data_trans)
+
+anova(fit_without_comp, fit_with_comp)
+
+```
+
+According to the result of partial F-test, the larger model including `comp_bin` is prefered. Besides, we already proof that `comp_bin` is a confounder so it should be included in the model along with ERvisits.
 
 ## f) 
 
@@ -335,13 +387,13 @@ lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_
 ```
 
 Comment:
-The result shows that almost all covariates contributed to the model besides gender's coefficient is less significant.
+The result shows that there is a relationship between Y and the set of covariates.
 
 
 ### ii) 
 Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why?
 
-The hypothese are as below:
+Hypothese:
 
 $$
 \begin{aligned}
@@ -371,7 +423,6 @@ $$
 $$
 
 
-
 ```{r}
 fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 fit_MLR = lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_trans)
@@ -379,10 +430,6 @@ anova(fit_SLR, fit_MLR)
 ```
 
 Conclusion:
-
-
-
-
 
 Given the result of anova test, it's obviously that the MLR is prefered. So, I would choose MLR to address the investigator's objective.
 
@@ -417,10 +464,12 @@ Fit a multiple regression model and test whether there is a regression relation.
 hypotheses, decision rule and conclusion.
 
 To build a multiple regression model, we add age, severity and anxiety as predictors:
+
 $$
 Y_{i} = \beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ anxiety} \ + \beta_{3}X_{i\ severity} + \varepsilon_{i}
 $$
 Hypotheses:
+
 $$
 \begin{aligned}
 &H_{0}:\ \beta_{1} = \beta_{2} = \beta_{3}=0\\
@@ -428,6 +477,7 @@ $$
 \end{aligned}
 $$
 Decision rule:
+
 $$
 \begin{aligned}
 &Test\ statistic:\\ 
@@ -441,9 +491,7 @@ $$
 ```{r}
 sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
 summary(sat_fit)
-
 ```
-
 
 ```{r}
 qf(0.975, 3, 42)
@@ -466,6 +514,7 @@ Show the regression results for all estimated coefficients with 95% CIs. Interpr
 and 95% CI associated with ‘severity of illness’.
 
 CI:
+
 ```{r}
 sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
 summary(sat_fit)
@@ -487,7 +536,6 @@ The function of `confint` shows the CIs for each estimated coefficients. From th
 Obtain an interval estimate for a new patient’s satisfaction when Age=35, Severity=42,
 Anxiety=2.1. Interpret the interval.
 
-
 For a given value of x, the interval estimate of the dependent variable y is called the prediction interval.
 
 ```{r}
@@ -504,9 +552,10 @@ The 95% prediction interval of the satisfaction for the age is 35, severity is 4
 ## e) 
 
 Test whether ‘anxiety level’ can be dropped from the regression model, given the other two
-covariates are retained. State the hypotheses, decision rule and conclusion. (3p)
+covariates are retained. State the hypotheses, decision rule and conclusion.
 
-The hypothese are as below:
+Hypothese:
+
 $$
 \begin{aligned}
 &Model\ 1:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ severity} \ +\  \varepsilon_{i}\\
@@ -533,7 +582,6 @@ $$
 &F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
 \end{aligned}
 $$
-
 
 ```{r}
 anova(lm(satisfaction ~ age + severity, data = sat_data), 
