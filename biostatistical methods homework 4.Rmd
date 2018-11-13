@@ -335,7 +335,7 @@ lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_
 ```
 
 Comment:
-The result shows that almost all covariates contributed to the model besides gender's coefficient is less significance.
+The result shows that almost all covariates contributed to the model besides gender's coefficient is less significant.
 
 
 ### ii) 
