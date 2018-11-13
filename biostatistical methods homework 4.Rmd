@@ -60,8 +60,13 @@ So the Least Square line equation always goes through the point $(\bar{X}, \bar{
 ## (c)
 $$
 \begin{aligned}
-log_{e}L &= -\frac{n}{2}log_{e}2\pi - \frac{n}{2}log_{e}\sigma^{2}-\frac{1}{2\sigma^{2}}\sum (Y_{i}-\beta_{0}-\beta_{1}X_{i})^{2}\\
-\frac{\partial(log_{e}L)}{\partial\sigma^{2}} &= -\frac{n}{2\sigma^{2}} + \frac{1}{2\sigma^{4}}\sum (Y_{i}-\beta_{0}-\beta_{1}X_{i})^{2}\\
+&log_{e}L = -\frac{n}{2}log_{e}2\pi - \frac{n}{2}log_{e}\sigma^{2}-\frac{1}{2\sigma^{2}}\sum (Y_{i}-\beta_{0}-\beta_{1}X_{i})^{2}\\
+&\frac{\partial(log_{e}L)}{\partial\sigma^{2}} = -\frac{n}{2\sigma^{2}} + \frac{1}{2\sigma^{4}}\sum (Y_{i}-\beta_{0}-\beta_{1}X_{i})^{2}\\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
 \hat{\sigma}^{2}&=\frac{\sum (Y_{i}-\hat{\beta_{0}}-\hat{\beta_{1}}X_{i})^{2}}{n}\\
 &=\frac{\sum(Y_{i}-\hat{Y_{i}})^{2}}{n}
 \end{aligned}
