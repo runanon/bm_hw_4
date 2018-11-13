@@ -341,16 +341,37 @@ The result shows that almost all covariates contributed to the model besides gen
 ### ii) 
 Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why?
 
+The hypothese are as below:
+
+$$
+\begin{aligned}
+&Model\ 1:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ ERvisits} \ +\ \beta_{2}X_{i\ comp\_bin} \ +\ \varepsilon_{i}\\
+&Model\ 2:\ Y_{i}=\beta_{0} \ +\ \beta_{1}X_{i\ ERvisits} \ +\ \beta_{2}X_{i\ comp\_bin} \ +\ \beta_{3}X_{i\ gender} \ +\ \beta_{4} X_{i\ age} \ +\ \varepsilon_{i}\\
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&H_{0} : \beta_{3} = \beta_{4} = 0\\ 
+&H_{1} : at\ least\ one\ \beta\ not\ equal\ to\ zero
+\end{aligned}
+$$
+Decision rule:
+
+
+
 ```{r}
 fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 fit_MLR = lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_trans)
 anova(fit_SLR, fit_MLR)
 ```
 
+Conclusion:
+
 Given the result of anova test, it's obviously that the MLR is prefered. So, I would choose MLR to address the investigator's objective.
 
 
-# Problem 3 (15p)
+# Problem 3
 
 A hospital administrator wishes to test the relationship between ‘patient’s satisfaction’ (Y) and ‘age’, ‘severity of illness’, and ‘anxiety level’ (data ‘PatSatisfaction.xlsx’). The administrator randomly selected 46 patients, collected the data, and asked for your help with the analysis.
 
@@ -483,11 +504,15 @@ $$
 &H_{1} : \beta_{3} \neq 0
 \end{aligned}
 $$
+Decision rule:
+
 
 ```{r}
 anova(lm(satisfaction ~ age + severity, data = sat_data), 
       lm(satisfaction ~ age + severity + anxiety, data = sat_data))
 ```
+
+Conclusion:
 
 The result shows that the anxiety should NOT be included in the model.
 
