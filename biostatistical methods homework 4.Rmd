@@ -243,9 +243,13 @@ heart_data = heart_data %>%
 Based on our decision in part b), fit a simple linear regression (SLR) between the original or transformed ‘total cost’ and predictor ‘ERvisits’. This includes a scatterplot and results of the regression, with appropriate comments on significance and interpretation of the slope.
 
 ```{r}
-heart_data_trans = heart_data %>%
-  mutate(totalcost = log(totalcost)) %>%
-  filter(totalcost != -Inf)
+heart_data_trans = heart_data 
+
+heart_data_trans$totalcost[heart_data_trans$totalcost==0]=0.01
+  
+heart_data_trans = heart_data_trans %>%  
+  mutate(totalcost = log(totalcost))
+
 ```
 
 
@@ -266,11 +270,11 @@ fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 summary(fit_SLR)
 ```
 
-The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 0.22672 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The estimate of slope means that when the number of ER visits increase 1, total cost will increase 25%.
+The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 0.2251 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The estimate of slope means that when the number of ER visits increase 1, total cost will increase 25%.
 $$
 \begin{aligned}
 log\left (\frac{Y_{2}}{Y_{1}}  \right ) &= \beta_{1} = 0.22672\\
-\frac{Y_{2}}{Y_{1}} &= e^{0.22672} = 1.25\\
+\frac{Y_{2}}{Y_{1}} &= exp^{0.2251} = 1.25\\
 Y_{2} &= 1.25Y_{1}
 \end{aligned}
 $$
@@ -333,6 +337,7 @@ lm(totalcost ~ comp_bin + ERvisits + age, data = heart_data_trans) %>%
 Judging from p-value and adjusted R-squared, `age` should NOT be included in the model.
 
 Add `gender` as a covariate:
+##(need revision)
 ```{r}
 heart_data_trans = heart_data_trans %>%
   mutate(gender = as.character(gender))
