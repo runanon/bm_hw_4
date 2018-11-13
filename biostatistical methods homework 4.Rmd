@@ -359,9 +359,12 @@ $$
 Decision rule:
 
 $$
+F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}\\
+df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1\\
+$$
+
+$$
 \begin{aligned}
-&F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}\\
-&df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1\\
 &F^{*}>F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ reject\ H_{0}\\
 &F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
 \end{aligned}
@@ -520,9 +523,12 @@ $$
 Decision rule:
 
 $$
+F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}\\
+df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1\\
+$$
+
+$$
 \begin{aligned}
-&F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}\\
-&df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1\\
 &F^{*}>F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ reject\ H_{0}\\
 &F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
 \end{aligned}
