@@ -515,7 +515,8 @@ $$
 $$
 
 ```{r}
-anova(lm(satisfaction ~ age + severity, data = sat_data), lm(satisfaction ~ age + severity + anxiety, data = sat_data))
+anova(lm(satisfaction ~ age + severity, data = sat_data), 
+      lm(satisfaction ~ age + severity + anxiety, data = sat_data))
 ```
 
 The result shows that the anxiety should NOT be included in the model.
