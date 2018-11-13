@@ -337,7 +337,6 @@ lm(totalcost ~ comp_bin + ERvisits + age, data = heart_data_trans) %>%
 Judging from p-value and adjusted R-squared, `age` should NOT be included in the model.
 
 Add `gender` as a covariate:
-##(need revision)
 ```{r}
 heart_data_trans = heart_data_trans %>%
   mutate(gender = as.character(gender))
@@ -345,7 +344,7 @@ heart_data_trans = heart_data_trans %>%
 lm(totalcost ~ comp_bin + ERvisits + gender, data = heart_data_trans) %>%
   summary()
 ```
-Judging from p-value and adjusted R-squared, `gender` should NOT be included in the model.
+Judging from p-value, `gender` should NOT be included in the model.
 
 Add `duration` as a covariate:
 ```{r}
