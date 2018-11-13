@@ -362,11 +362,6 @@ lm(totalcost ~ comp_bin * duration + ERvisits * duration, data = heart_data_tran
 ```
 Judging from the p-value and adjusted R-squared, `duration` is NOT an effective modifier.
 
-Check:
-```{r}
-anova(lm(totalcost ~ comp_bin + ERvisits + duration, data = heart_data_trans))
-```
-
 
 In conclusion, the final MLR will include `comp_bin`, `duration` and `ERvisits`:
 $$
@@ -439,10 +434,23 @@ $$
 ```{r}
 sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
 summary(sat_fit)
-anova(sat_fit)
+
 ```
 
-Judging from the p-value, we can see that at least one $\beta$ is not zero, so we reject the null. 
+
+```{r}
+qf(0.975, 3, 42)
+```
+
+$$
+\begin{aligned}
+&F^{*} = 30.05\\
+&F(0.975,\ 3,\ 42)= 3.445689\\
+&F^{*}>F(0.975,\ 3,\ 42)
+\end{aligned}
+$$
+
+Judging from the p-value and F*, we reject the null. 
 
 
 ## c) 
@@ -450,18 +458,40 @@ Judging from the p-value, we can see that at least one $\beta$ is not zero, so w
 Show the regression results for all estimated coefficients with 95% CIs. Interpret the coefficient
 and 95% CI associated with ‘severity of illness’.
 
+CI:
+```{r}
+sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
+summary(sat_fit)
+```
 
+```{r}
+confint(sat_fit)
+```
 
+Interpretation:
+
+From the summary we see that the estimated coefficients of age, severity and anxiety is -1.1416, -0.4420 and -13.4702 respectively. Judging from the p-value, only the coefficients of age shows significance. 
+
+The function of `confint` shows the CIs for each estimated coefficients. From the result we can conclude that we are 95% confidence that the true coefficient of severity will fall within the interval of (-1.434831, 0.5508228).
 
 
 ## d) 
 
 Obtain an interval estimate for a new patient’s satisfaction when Age=35, Severity=42,
-Anxiety=2.1. Interpret the interval. (2p)
+Anxiety=2.1. Interpret the interval.
 
 
+For a given value of x, the interval estimate of the dependent variable y is called the prediction interval.
 
+```{r}
+pi_data = data.frame(age = 35, severity = 42, anxiety = 2.1)
+```
 
+```{r}
+predict(sat_fit, pi_data, interval="predict") 
+```
+
+The 95% prediction interval of the satisfaction for the age is 35, severity is 42 and anxiety is 2.1 is between 50.06237 and 93.30426. The result means that we are 95% confidence that a future observation of satisfaction for age is 35, severity is 42 and anxiety is 2.1 will be contained within the interval between 50.06237 and 93.30426.
 
 
 ## e) 
