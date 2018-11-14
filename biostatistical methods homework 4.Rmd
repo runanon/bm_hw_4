@@ -103,7 +103,6 @@ For this problem, you will be using data ‘HeartDisease.csv’.
 heart_data = read_csv("./data/HeartDisease.csv")
 ```
 
-
 The investigator is mainly interested if there is an association between ‘total cost’ (in dollars) of patients diagnosed with heart disease and the ‘number of emergency room (ER) visits’. 
 
 Further, the model will need to be adjusted for other factors, including ‘age’, ‘gender’, ‘number of complications’ that arose during treatment, and ‘duration of treatment condition’.
@@ -112,7 +111,9 @@ Further, the model will need to be adjusted for other factors, including ‘age�
 
 Provide a short description of the data set: what is the main outcome, main predictor and other important covariates. 
 
+
 This dataset include `r ncol(heart_data)` variables and `r nrow(heart_data)` observations. The main outcome is `totalcost` which represents the total cost (in dollars) of heart-diseased patients. The main predictor is the `ERvisits` which represents the number of emergency room (ER) visits. Other important covariates are `age`, `gender`, `complications` and `duration`. 
+
 
 Also, generate appropriate descriptive statistics for all variables of interest (continuous and categorical) – no test required. 
 
@@ -177,6 +178,7 @@ mean_and_sd(heart_data$duration)
 
 The average duration of treatment condition is 164 with a standard deviation of 121.
 
+
 ## b) 
 
 
@@ -227,6 +229,8 @@ totalcost_sqrt = heart_data %>%
 
 The shape of the distribution for `totalcost` is right skewed. After trying different transformation we find that the log transformation makes the plot approximate to normal distribution.
 
+
+
 ## c) 
 
 Create a new variable called ‘comp_bin’ by dichotomizing ‘complications’: 0 if no complications, and 1 otherwise.
@@ -241,6 +245,7 @@ heart_data = heart_data %>%
 ## d) 
 
 Based on our decision in part b), fit a simple linear regression (SLR) between the original or transformed ‘total cost’ and predictor ‘ERvisits’. This includes a scatterplot and results of the regression, with appropriate comments on significance and interpretation of the slope.
+
 
 ```{r}
 heart_data_trans = heart_data 
@@ -270,7 +275,10 @@ fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 summary(fit_SLR)
 ```
 
+
 The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 0.2251 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The estimate of slope means that when the number of ER visits increase 1, total cost will increase 25%.
+
+
 $$
 \begin{aligned}
 log\left (\frac{Y_{2}}{Y_{1}}  \right ) &= \beta_{1} = 0.22672\\
@@ -346,23 +354,31 @@ $$
 Decision rule:
 
 $$
-F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}} \\
+F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{S}-df_{L})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{S}-df_{L},\ df_{L}} \\
 df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
 $$
 
 $$
 \begin{aligned}
-&F^{*}>F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ reject\ H_{0}\\
-&F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
+&F^{*}>F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ reject\ H_{0}\\
+&F^{*}\leq F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ fail\ to\ reject\ H_{0}
 \end{aligned}
 $$
+$$
+\begin{aligned}
+&F^{*}=34.694\\
+&F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}}=F_{0.95,\ 1,\ 3}=10.12796\\
+&F^{*}>F_{0.95,\ 1,\ 3},\ reject\ H_{0}
+\end{aligned}
+$$
+
 
 ```{r}
 fit_without_comp = lm(totalcost ~ ERvisits, data = heart_data_trans)
 fit_with_comp = lm(totalcost ~ ERvisits + comp_bin, data = heart_data_trans)
 
 anova(fit_without_comp, fit_with_comp)
-
+qf(0.95, 1, 3)
 ```
 
 According to the result of partial F-test, the larger model including `comp_bin` is prefered. Besides, we already proof that `comp_bin` is a confounder so it should be included in the model along with ERvisits.
@@ -408,25 +424,34 @@ $$
 &H_{1} : at\ least\ one\ \beta\ not\ equal\ to\ zero
 \end{aligned}
 $$
+
 Decision rule:
 
 $$
-F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}} \\
+F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{S}-df_{L})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{S}-df_{L},\ df_{L}} \\
 df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
 $$
 
 $$
 \begin{aligned}
-&F^{*}>F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ reject\ H_{0}\\
-&F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
+&F^{*}>F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ reject\ H_{0}\\
+&F^{*}\leq F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ fail\ to\ reject\ H_{0}
 \end{aligned}
 $$
 
+$$
+\begin{aligned}
+&F^{*}=44.49\\
+&F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}}=F_{0.95,\ 2,\ 5}\\
+&F^{*}>F_{0.95,\ 2,\ 5},\ reject\ H_{0}
+\end{aligned}
+$$
 
 ```{r}
 fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 fit_MLR = lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_trans)
 anova(fit_SLR, fit_MLR)
+qf(0.95, 2, 5)
 ```
 
 Conclusion:
@@ -488,6 +513,13 @@ $$
 \end{aligned}
 $$
 
+$$
+\begin{aligned}
+&F^{*} = 30.05\\
+&F(0.975,\ 3,\ 42)= 3.445689\\
+&F^{*}>F(0.975,\ 3,\ 42)
+\end{aligned}
+$$
 ```{r}
 sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
 summary(sat_fit)
@@ -497,15 +529,7 @@ summary(sat_fit)
 qf(0.975, 3, 42)
 ```
 
-$$
-\begin{aligned}
-&F^{*} = 30.05\\
-&F(0.975,\ 3,\ 42)= 3.445689\\
-&F^{*}>F(0.975,\ 3,\ 42)
-\end{aligned}
-$$
-
-Judging from the p-value and F*, we reject the null. 
+Judging from the p-value and F*, we reject the null, which means there is a relationship between predictors and outcome.  
 
 
 ## c) 
@@ -572,25 +596,32 @@ $$
 Decision rule:
 
 $$
-F^{*} = \frac{(SSR_{L}-SSR_{S})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}} \\
+F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{S}-df_{L})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{S}-df_{L},\ df_{L}} \\
 df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
 $$
 
 $$
 \begin{aligned}
-&F^{*}>F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ reject\ H_{0}\\
-&F^{*}\leq F_{1-\alpha,\ df_{L}-df_{S},\ df_{L}},\ fail\ to\ reject\ H_{0}
+&F^{*}>F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ reject\ H_{0}\\
+&F^{*}\leq F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ fail\ to\ reject\ H_{0}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&F^{*}=3.5997\\
+&F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}}=F_{0.95,\ 1,\ 4}=7.708647\\
+&F*<F_{0.95,\ 1,\ 4},\ fail\ to\ reject\ H_{0}
 \end{aligned}
 $$
 
 ```{r}
 anova(lm(satisfaction ~ age + severity, data = sat_data), 
       lm(satisfaction ~ age + severity + anxiety, data = sat_data))
+qf(0.95, 1, 4)
 ```
 
 Conclusion:
 
-The result shows that the anxiety should NOT be included in the model.
-
-
+The result shows that the anxiety should NOT be included in the model due to the large p-value at 0.05 significance level and the desicion rule. So we tend to use the smaller model.
 
