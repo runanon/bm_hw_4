@@ -564,6 +564,16 @@ and 95% CI associated with ‘severity of illness’.
 
 CI:
 
+$$
+\begin{aligned}
+&E(Y_{h})=\beta_{0}+\beta_{1}X_{h}\\
+&\hat{Y_{h}}=\hat{\beta_{0}}+\hat{\beta_{1}}X_{h}\\
+&\hat{\beta_{0}}+\hat{\beta_{1}}X_{h}\pm t_{n-2,1-\alpha/2}\times se(\hat{\beta_{0}}+\hat{\beta_{1}}X_{h})\\
+&se(\hat{\beta_{0}}+\hat{\beta_{1}}X_{h})=\sqrt{MSE\left \{\frac{1}{n}+[(X_{h}-\bar{X})^2/\sum_{i=1}^{n}(X_{i}-\bar{X})^2]  \right \}}
+\end{aligned}
+$$
+
+
 ```{r}
 sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
 summary(sat_fit)
@@ -586,6 +596,17 @@ Obtain an interval estimate for a new patient’s satisfaction when Age=35, Seve
 Anxiety=2.1. Interpret the interval.
 
 For a given value of x, the interval estimate of the dependent variable y is called the prediction interval.
+
+PI:
+
+$$
+\begin{aligned}
+&\hat{\beta_{0}}+\hat{\beta_{1}}X_{h}\pm t_{n-2,1-\alpha/2}\times se(\hat{\beta_{0}}+\hat{\beta_{1}}X_{h})\\
+&se(\hat{\beta_{0}}+\hat{\beta_{1}}X_{h})=\sqrt{MSE\left \{\frac{1}{n}+[(X_{h}-\bar{X})^2/\sum_{i=1}^{n}(X_{i}-\bar{X})^2]+1  \right \}}
+\end{aligned}
+$$
+
+
 
 ```{r}
 pi_data = data.frame(age = 35, severity = 42, anxiety = 2.1)
