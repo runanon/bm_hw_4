@@ -354,31 +354,37 @@ $$
 Decision rule:
 
 $$
-F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{S}-df_{L})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{S}-df_{L},\ df_{L}} \\
+F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}
+$$
+$$
 df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
 $$
 
 $$
 \begin{aligned}
-&F^{*}>F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ reject\ H_{0}\\
-&F^{*}\leq F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ fail\ to\ reject\ H_{0}
-\end{aligned}
-$$
-$$
-\begin{aligned}
 &F^{*}=34.694\\
-&F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}}=F_{0.95,\ 1,\ 3}=10.12796\\
-&F^{*}>F_{0.95,\ 1,\ 3},\ reject\ H_{0}
 \end{aligned}
 $$
 
+$$
+\begin{aligned}
+&Pr(F>F^{*})< 0.05,\ reject\ H_{0}\\
+&Pr(F>F^{*})\geq 0.05,\ fail\ to\ reject\ H_{0}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&Pr(F>F^{*})=5.721e-09< 0.05,\ reject\ H_{0}\\
+\end{aligned}
+$$
 
 ```{r}
 fit_without_comp = lm(totalcost ~ ERvisits, data = heart_data_trans)
 fit_with_comp = lm(totalcost ~ ERvisits + comp_bin, data = heart_data_trans)
 
 anova(fit_without_comp, fit_with_comp)
-qf(0.95, 1, 3)
+
 ```
 
 According to the result of partial F-test, the larger model including `comp_bin` is prefered. Besides, we already proof that `comp_bin` is a confounder so it should be included in the model along with ERvisits.
@@ -392,6 +398,7 @@ Use your choice of model in part e) and add additional covariates (age, gender, 
 Fit a MLR, show the regression results and comment.
 
 Regression model in e):
+
 ```{r}
 lm(totalcost ~ comp_bin + ERvisits, data = heart_data_trans) %>%
   summary()
@@ -403,10 +410,12 @@ lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_
 ```
 
 Comment:
+
 The result shows that there is a relationship between Y and the set of covariates.
 
 
 ### ii) 
+
 Compare the SLR and MLR models. Which model would you use to address the investigator’s objective and why?
 
 Hypothese:
@@ -428,22 +437,28 @@ $$
 Decision rule:
 
 $$
-F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{S}-df_{L})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{S}-df_{L},\ df_{L}} \\
+F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{L}-df_{S})}{\frac{SSE_{}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}
+$$
+$$
 df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
 $$
 
 $$
 \begin{aligned}
-&F^{*}>F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ reject\ H_{0}\\
-&F^{*}\leq F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ fail\ to\ reject\ H_{0}
+&F^{*}=44.49\\
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
-&F^{*}=44.49\\
-&F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}}=F_{0.95,\ 2,\ 5}\\
-&F^{*}>F_{0.95,\ 2,\ 5},\ reject\ H_{0}
+&Pr(F>F^{*})< 0.05,\ reject\ H_{0}\\
+&Pr(F>F^{*})\geq 0.05,\ fail\ to\ reject\ H_{0}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&Pr(F>F^{*})=2.2e-16< 0.05,\ reject\ H_{0}\\
 \end{aligned}
 $$
 
@@ -451,7 +466,7 @@ $$
 fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 fit_MLR = lm(totalcost ~ comp_bin + ERvisits + age + gender + duration, data = heart_data_trans)
 anova(fit_SLR, fit_MLR)
-qf(0.95, 2, 5)
+
 ```
 
 Conclusion:
@@ -493,6 +508,7 @@ To build a multiple regression model, we add age, severity and anxiety as predic
 $$
 Y_{i} = \beta_{0} \ +\ \beta_{1}X_{i\ age} \ +\ \beta_{2}X_{i\ anxiety} \ + \beta_{3}X_{i\ severity} + \varepsilon_{i}
 $$
+
 Hypotheses:
 
 $$
@@ -501,6 +517,7 @@ $$
 &H_{1}:\ at\ least\ one\ \beta\ is \ not\ zero
 \end{aligned}
 $$
+
 Decision rule:
 
 $$
@@ -516,20 +533,29 @@ $$
 $$
 \begin{aligned}
 &F^{*} = 30.05\\
-&F(0.975,\ 3,\ 42)= 3.445689\\
-&F^{*}>F(0.975,\ 3,\ 42)
 \end{aligned}
 $$
+
+$$
+\begin{aligned}
+&Pr(F>F^{*})< 0.05,\ reject\ H_{0}\\
+&Pr(F>F^{*})\geq 0.05,\ fail\ to\ reject\ H_{0}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&Pr(F>F^{*})=1.542e-10 < 0.05,\ reject\ H_{0}\\
+\end{aligned}
+$$
+
 ```{r}
 sat_fit = lm(satisfaction ~ age + severity + anxiety, data = sat_data)
 summary(sat_fit)
 ```
 
-```{r}
-qf(0.975, 3, 42)
-```
 
-Judging from the p-value and F*, we reject the null, which means there is a relationship between predictors and outcome.  
+Judging from the p-value, we reject the null, which means there is a relationship between predictors and outcome.  
 
 
 ## c) 
@@ -593,32 +619,38 @@ $$
 &H_{1} : \beta_{3} \neq 0
 \end{aligned}
 $$
+
 Decision rule:
 
 $$
-F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{S}-df_{L})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{S}-df_{L},\ df_{L}} \\
+F^{*} = \frac{(SSE_{S}-SSE_{L})/(df_{L}-df_{S})}{\frac{SSE_{L}}{df_{L}}} \sim F_{df_{L}-df_{S},\ df_{L}}
+$$
+$$
 df_{S}=n-p_{S}-1,\ df_{L}=n-p_{L}-1
 $$
 
 $$
 \begin{aligned}
-&F^{*}>F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ reject\ H_{0}\\
-&F^{*}\leq F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}},\ fail\ to\ reject\ H_{0}
+&F^{*}=3.5997\\
 \end{aligned}
 $$
 
 $$
 \begin{aligned}
-&F^{*}=3.5997\\
-&F_{1-\alpha,\ df_{S}-df_{L},\ df_{L}}=F_{0.95,\ 1,\ 4}=7.708647\\
-&F*<F_{0.95,\ 1,\ 4},\ fail\ to\ reject\ H_{0}
+&Pr(F>F^{*})< 0.05,\ reject\ H_{0}\\
+&Pr(F>F^{*})\geq 0.05,\ fail\ to\ reject\ H_{0}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&Pr(F>F^{*})=0.06468 > 0.05,\ fail\ to\ reject\ H_{0}\\
 \end{aligned}
 $$
 
 ```{r}
 anova(lm(satisfaction ~ age + severity, data = sat_data), 
       lm(satisfaction ~ age + severity + anxiety, data = sat_data))
-qf(0.95, 1, 4)
 ```
 
 Conclusion:
