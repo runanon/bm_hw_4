@@ -275,10 +275,6 @@ fit_SLR = lm(totalcost ~ ERvisits, data = heart_data_trans)
 summary(fit_SLR)
 ```
 
-
-The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 0.2251 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The estimate of slope means that when the number of ER visits increase 1, total cost will increase 25%.
-
-
 $$
 \begin{aligned}
 log\left (\frac{Y_{2}}{Y_{1}}  \right ) &= \beta_{1} = 0.22672\\
@@ -286,6 +282,9 @@ log\left (\frac{Y_{2}}{Y_{1}}  \right ) &= \beta_{1} = 0.22672\\
 Y_{2} &= 1.25Y_{1}
 \end{aligned}
 $$
+
+The plot above shows the scatterplot and results of the regression. Using `summary` function, we can see that the estimate slope is 0.2251 with a p-value <2e-16, which strongly indicates that the slope is not equal to 0 and there is significant relationship with `ERvisits` and `totalcost`. The estimate of slope means that when the number of ER visits increase 1, total cost will increase 25%. However, the adjusted R-squated is 0.08838 which is really close to 0 indicating the SLR is not the best model.
+
 
 ## e) 
 
